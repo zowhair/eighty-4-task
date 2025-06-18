@@ -8,12 +8,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const videoWrapper = volBtn.closest('[js-video-wrapper]');
 
         if(currentTarget.classList.contains('muted')) {
-            videoWrapper.querySelector('video').setAttribute('muted', true)
+            videoWrapper.querySelector('video').muted = true
         } else {
-            videoWrapper.querySelector('video').setAttribute('muted', false)
+            videoWrapper.querySelector('video').muted = false
         }
-
-
     })
     })
 })

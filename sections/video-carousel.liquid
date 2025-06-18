@@ -1,5 +1,6 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 {{ 'video-carousel.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
 
 <div class="custom__video-carousel {% if section.settings.page_width == 'p_width' %} page-width {% endif %}" js-custom-video-carousel>
   {% if section.settings.title != blank %}
@@ -11,7 +12,7 @@
         {% for carousel_products in carousel_obj.products.value %}
           <div class="swiper-slide">
             {% assign product = carousel_products %}
-            {% assign product_form_id = 'product-form-' | append: product.handle | append: '-' | append: forloop.index %}
+            {% assign product_form_id = 'product-form-' | append: section.id | append: product.handle | append: '-' | append: forloop.index %}
             <div class="video-wrapper" js-video-wrapper>
               {{ product.metafields.custom.product_video.value | video_tag: controls: false, autoplay: true, loop: true, muted: true }}
               <button class="mute-toggle" js-speaker-button>
@@ -32,7 +33,7 @@
                   </div>
                   <div class="text__content">
                     <div class="title">
-                      <span>{{ product.title | truncate: 40 }}</span>
+                      <span>{{ product.title | truncate: 35 }}</span>
                     </div>
                     <div class="money">
                       <span class="price">
@@ -49,10 +50,7 @@
                           <!-- !Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc. -->
                         <path d="M233.4 105.4c12.5-12.5 32.8-12.5 45.3 0l192 192c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 173.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l192-192z" /></svg>
                     </div>
-                    <product-form
-                      class="product-form"
-                      data-hide-errors="{{ gift_card_recipient_feature_active }}"
-                      data-section-id="{{ section.id }}">
+                    <product-form class="product-form" data-section-id="{{ section.id }}-{{forloop.index}}">
 
                       {%- form 'product'
                         , product
@@ -103,7 +101,7 @@
 <script src="{{ 'video-carousel.js' |  asset_url }}"></script>
 <!-- Initialize Swiper -->
 <script>
-     var swiper = new Swiper(".mySwiper", {
+    var swiper = new Swiper(".mySwiper", {
       slidesPerView: 1.2,
       spaceBetween: 1,
       loop: true,
@@ -127,6 +125,18 @@
         },
       },
     });
+
+    swiper.on('slideChange', function(e) {
+      const activeIndex = e.activeIndex;
+      const videos = document.querySelectorAll('[js-video-wrapper] video');
+      videos.forEach((video, index) => {
+        if(index != activeIndex) {
+          video.muted = true;
+        } else {
+          video.muted = false;
+        }
+      })
+    })
 </script>
 
 {% schema %}
