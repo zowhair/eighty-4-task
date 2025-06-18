@@ -1,0 +1,177 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+{{ 'video-carousel.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+<div class="custom__video-carousel {% if section.settings.page_width == 'p_width' %} page-width {% endif %}" js-custom-video-carousel>
+  {% if section.settings.title != blank %}
+    <p class="section__title">{{ section.settings.title }}</p>
+  {% endif %}
+  <div class="swiper mySwiper ">
+    <div class="swiper-wrapper">
+      {% for carousel_obj in shop.metaobjects.carousel_products.values %}
+        {% for carousel_products in carousel_obj.products.value %}
+          <div class="swiper-slide">
+            {% assign product = carousel_products %}
+            {% assign product_form_id = 'product-form-' | append: section.id | append: product.handle | append: '-' | append: forloop.index %}
+            <div class="video-wrapper" js-video-wrapper>
+              {{ product.metafields.custom.product_video.value | video_tag: controls: false, autoplay: true, loop: true, muted: true }}
+              <button class="mute-toggle" js-speaker-button>
+                <svg
+                  class="volume-up"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                  viewBox="0 0 24 24">
+                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.06c1.48-.74 2.5-2.26 2.5-4.03zm2.5 0c0 3.04-1.65 5.64-4.13 6.99l1.43 1.43C19.99 19.19 22 15.83 22 12s-2.01-7.19-5.7-9.42l-1.43 1.43C17.35 6.36 19 8.96 19 12z" />
+                </svg>
+              </button>
+              <div class="carousel__product-card">
+                <div class="card__wrapper">
+                  <div class="image" style="background-image: url('{{ product.featured_image | image_url: width: 100 }}');background-size: cover;background-position: center;background-repeat: no-repeat;">
+                    {% comment %} {{ product.featured_image | image_url: width: 100 | image_tag }} {% endcomment %}
+                  </div>
+                  <div class="text__content">
+                    <div class="title">
+                      <span>{{ product.title | truncate: 35 }}</span>
+                    </div>
+                    <div class="money">
+                      <span class="price">
+                        {{ product.price | money_without_trailing_zeros }}
+                      </span>
+                      <span class="compare__price">
+                        {{ product.compare_at_price | money_without_trailing_zeros }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="icons">
+                    <div class="arrow-up">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                          <!-- !Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc. -->
+                        <path d="M233.4 105.4c12.5-12.5 32.8-12.5 45.3 0l192 192c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 173.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l192-192z" /></svg>
+                    </div>
+                    <product-form class="product-form" data-section-id="{{ section.id }}-{{forloop.index}}">
+
+                      {%- form 'product'
+                        , product
+                        , id: product_form_id
+                        , class: 'form'
+                        , novalidate: 'novalidate'
+                        , data-type: 'add-to-cart-form'
+                      -%}
+                        <input
+                          type="hidden"
+                          name="id"
+                          value="{{ product.selected_or_first_available_variant.id }}"
+                          {% if product.selected_or_first_available_variant.available == false or quantity_rule_soldout or product.selected_or_first_available_variant == null %}
+                          disabled
+                          {% endif %}
+                          class="product-variant-id">
+                        <button
+                          class="add__icon"
+                          type="submit"
+                          name="add"
+                          id="ProductSubmitButton-{{ section.id }}-{{forloop.index}}">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            width="24px"
+                            height="24px"
+                            fill-rule="evenodd"><path fill-rule="evenodd" d="M 11 2 L 11 11 L 2 11 L 2 13 L 11 13 L 11 22 L 13 22 L 13 13 L 22 13 L 22 11 L 13 11 L 13 2 Z" /></svg>
+                        </button>
+                      {%- endform -%}
+                    </product-form>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+  <div class="swiper__navigation">
+    <div class="swiper-button-prev custom-nav"></div>
+    <div class="swiper-button-next custom-nav"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="{{ 'video-carousel.js' |  asset_url }}"></script>
+<!-- Initialize Swiper -->
+<script>
+    var swiper = new Swiper(".mySwiper", {
+      slidesPerView: 1.2,
+      spaceBetween: 1,
+      loop: true,
+      centeredSlides: true,
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      breakpoints: {
+        450: {
+          slidesPerView: 1.5,
+        },
+        640: {
+          slidesPerView: 2,
+        },
+        768: {
+          slidesPerView: 3,
+        },
+        1024: {
+          slidesPerView: 4,
+        },
+        1300: {
+          slidesPerView: 5,
+        }
+      },
+    });
+
+    swiper.on('slideChange', function(e) {
+      const activeIndex = e.activeIndex;
+      const videos = document.querySelectorAll('[js-video-wrapper] video');
+      videos.forEach((video, index) => {
+        if(index != activeIndex) {
+          video.muted = true;
+        } else {
+          video.muted = false;
+        }
+      })
+    })
+</script>
+
+{% schema %}
+  {
+    "name": "Video Carousel",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title"
+      },
+      {
+        "type": "select",
+        "id": "page_width",
+        "label": "Page Width",
+        "options": [
+          {
+            "value": "p_width",
+            "label": "Page Width"
+          },
+          {
+            "value": "full",
+            "label": "Full"
+          }
+        ],
+        "default": "p_width"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Vide Carousel"
+      }
+    ]
+  }
+{% endschema %}

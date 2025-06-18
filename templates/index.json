@@ -56,6 +56,14 @@
         "show_text_below": false
       }
     },
+    "video_carousel_gbEcWm": {
+      "type": "video-carousel",
+      "name": "Vide Carousel",
+      "settings": {
+        "title": "Trusted by 700,000 customers",
+        "page_width": "p_width"
+      }
+    },
     "rich_text": {
       "type": "rich-text",
       "blocks": {
@@ -223,6 +231,7 @@
   },
   "order": [
     "image_banner",
+    "video_carousel_gbEcWm",
     "rich_text",
     "featured_collection",
     "collage",
